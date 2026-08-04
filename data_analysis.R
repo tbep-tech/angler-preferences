@@ -54,14 +54,15 @@ anglers <- anglers %>%
          FUNDING = factor(FUNDING, levels = c("Opposed","Neutral","Supportive")),
          AWARE = factor(AWARE, levels = c("No","Yes")))
 
-         
-######### * TIRE REEF MANAGEMENT ACTIONS ######### 
-
 # Determine which anglers use tire reefs
 anglers <- anglers %>%
   mutate(AR_USER = ifelse(HABITAT_ARTREEF == "Never" | HABITAT_ARTREEF == "Not sure", "Non-user",
                           ifelse(is.na(AR_MATERIAL_TIRE) | AR_MATERIAL_TIRE == "Never" | AR_MATERIAL_TIRE == "Not sure", "Other Reef User", "Tire Reef User"))) %>%
   mutate(AR_USER = factor(AR_USER, levels = c("Non-user","Other Reef User","Tire Reef User")))
+
+         
+######### * TIRE REEF MANAGEMENT ACTIONS ######### 
+
 
 # Reshape
 anglers_long <- anglers %>%
@@ -179,5 +180,33 @@ ggplot(anglers_long, aes(x = ACTION, y = SUPPORT, fill = FREQUENCY, color = FREQ
 #ggsave(file='C:/Users/bsimm/Dropbox/Tampa Bay Estuary Program/Research/BSS/RESULTS/SHORE_DESIRE.svg', plot=plot_SHORE_DESIRE, width=200, height=125, units = "mm", bg = "transparent")
 
 
+######### * SPATIAL DISTRIBUTION ######### 
 
+# Reshape
+zones_long <- anglers %>%
+  pivot_longer(cols = starts_with("ZONE_"),
+               names_to = "ZONE",
+               names_prefix = "ZONE_",
+               values_to = "PRESENCE") %>%
+  mutate(ZONE = factor(ZONE))
+
+zones <- zones_long %>%
+  group_by(ZONE) %>%
+  summarise(
+    anglers = sum(PRESENCE)) %>%
+  mutate(pct = anglers/485*100)
+
+action_means_users <- anglers_long %>%
+  group_by(AR_USER, ACTION) %>%
+  summarise(
+    mean = mean(SUPPORT, na.rm = TRUE),
+    sd = sd(SUPPORT, na.rm = TRUE),
+    .groups = "drop")
+
+#write.csv(action_means, file='C:/Users/bsimm/Dropbox/Tampa Bay Estuary Program/Research/Angler Preferences/Results/action_means.csv', row.names = FALSE)
+
+
+# Create table of zone hotspots
+zones <- anglers %>%
+  group_by()
 
