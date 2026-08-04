@@ -188,20 +188,34 @@ zones_long <- anglers %>%
                names_to = "ZONE",
                names_prefix = "ZONE_",
                values_to = "PRESENCE") %>%
-  mutate(ZONE = factor(ZONE))
+  mutate(ZONE = as.integer(ZONE))
 
+# All anglers (n = 485)
 zones <- zones_long %>%
   group_by(ZONE) %>%
   summarise(
     anglers = sum(PRESENCE)) %>%
   mutate(pct = anglers/485*100)
 
-action_means_users <- anglers_long %>%
-  group_by(AR_USER, ACTION) %>%
+# Artificial reef anglers (n = 402)
+zones_AR <- zones_long %>%
+  filter(AR_USER != "Non-user") %>%
+  group_by(ZONE) %>%
   summarise(
-    mean = mean(SUPPORT, na.rm = TRUE),
-    sd = sd(SUPPORT, na.rm = TRUE),
-    .groups = "drop")
+    AR_anglers = sum(PRESENCE)) %>%
+  mutate(AR_pct = AR_anglers/402*100)
+
+# Tire reef anglers (n = 71)
+zones_tire <- zones_long %>%
+  filter(AR_USER == "Tire Reef User") %>%
+  group_by(ZONE) %>%
+  summarise(
+    tire_anglers = sum(PRESENCE)) %>%
+  mutate(tire_pct = tire_anglers/71*100)
+
+# Combine
+zones <- cbind(zones, zones_AR, zones_tire)
+
 
 #write.csv(action_means, file='C:/Users/bsimm/Dropbox/Tampa Bay Estuary Program/Research/Angler Preferences/Results/action_means.csv', row.names = FALSE)
 
