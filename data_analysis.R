@@ -60,7 +60,187 @@ anglers <- anglers %>%
                           ifelse(is.na(AR_MATERIAL_TIRE) | AR_MATERIAL_TIRE == "Never" | AR_MATERIAL_TIRE == "Not sure", "Other Reef User", "Tire Reef User"))) %>%
   mutate(AR_USER = factor(AR_USER, levels = c("Non-user","Other Reef User","Tire Reef User")))
 
-         
+
+######### * SUMMARIES ######### 
+
+AGE <- anglers %>%
+  drop_na(AGE) %>%
+  group_by(AGE) %>%
+  summarise(n = n()) %>%
+  mutate(pct = n/sum(n)*100)
+plot_AGE <- ggplot(AGE, aes(x = "", y = pct, fill = AGE)) +
+  geom_col(color = "white") +
+  scale_fill_manual(name = "Age group", values = c("#96CEF0","#6CBAE9","#3E9CD5","#0070B3","#004D79","#002439")) +
+  coord_polar(theta = "y", direction = -1) +
+  theme_void() +
+  theme(
+    strip.text = element_text(face = "bold", size = 12))
+ggsave(file='C:/Users/bsimm/Dropbox/Tampa Bay Estuary Program/Research/BSS/RESULTS/AGE.svg', plot=plot_AGE, width=175, height=65, units = "mm", bg = "transparent")
+write.csv(AGE, file='C:/Users/bsimm/Dropbox/Tampa Bay Estuary Program/Research/BSS/RESULTS/AGE.csv', row.names = FALSE)
+
+
+GENDER <- anglers %>%
+  drop_na(GENDER) %>% 
+  group_by(GENDER) %>%
+  summarise(n = n()) %>%
+  mutate(pct = n/sum(n)*100)
+plot_GENDER <- ggplot(GENDER, aes(x = "", y = pct, fill = GENDER)) +
+  geom_col(color = "white") +
+  scale_fill_manual(name = "Gender", values = c("#004F7E","#02806E")) +
+  coord_polar(theta = "y", direction = -1) +
+  theme_void() +
+  theme(
+    strip.text = element_text(face = "bold", size = 12))
+ggsave(file='C:/Users/bsimm/Dropbox/Tampa Bay Estuary Program/Research/BSS/RESULTS/GENDER.svg', plot=plot_GENDER, width=175, height=65, units = "mm", bg = "transparent")
+write.csv(GENDER, file='C:/Users/bsimm/Dropbox/Tampa Bay Estuary Program/Research/BSS/RESULTS/GENDER.csv', row.names = FALSE)
+
+
+COUNTY <- anglers %>%
+  drop_na(COUNTY) %>% 
+  group_by(COUNTY) %>%
+  summarise(n = n()) %>%
+  mutate(pct = n/sum(n)*100)
+plot_COUNTY <- ggplot(COUNTY, aes(x = "", y = pct, fill = COUNTY)) +
+  geom_col(color = "white") +
+  scale_fill_manual(name = "County", values = c("#02806E","#004F7E","#5C524F","#DC9E00","#962C14","#653682","#000000")) +
+  coord_polar(theta = "y", direction = -1) +
+  theme_void() +
+  theme(
+    strip.text = element_text(face = "bold", size = 12))
+ggsave(file='C:/Users/bsimm/Dropbox/Tampa Bay Estuary Program/Research/BSS/RESULTS/COUNTY.svg', plot=plot_COUNTY, width=175, height=65, units = "mm", bg = "transparent")
+write.csv(COUNTY, file='C:/Users/bsimm/Dropbox/Tampa Bay Estuary Program/Research/BSS/RESULTS/COUNTY.csv', row.names = FALSE)
+
+
+FREQUENCY <- anglers %>%
+  drop_na(FREQUENCY) %>% 
+  group_by(FREQUENCY) %>%
+  summarise(n = n()) %>%
+  mutate(pct = n/sum(n)*100)
+plot_FREQUENCY <- ggplot(FREQUENCY, aes(x = "", y = pct, fill = FREQUENCY)) +
+  geom_col(color = "white") +
+  scale_fill_manual(name = "Annual Fishing Frequency", values = c("#96CEF0","#3E9CD5","#004D79","#002439")) +
+  coord_polar(theta = "y", direction = -1) +
+  theme_void() +
+  theme(
+    strip.text = element_text(face = "bold", size = 12))
+ggsave(file='C:/Users/bsimm/Dropbox/Tampa Bay Estuary Program/Research/BSS/RESULTS/FREQUENCY.svg', plot=plot_SEASONALITY, width=175, height=65, units = "mm", bg = "transparent")
+write.csv(FREQUENCY, file='C:/Users/bsimm/Dropbox/Tampa Bay Estuary Program/Research/BSS/RESULTS/FREQUENCY.csv', row.names = FALSE)
+
+
+DURATION <- anglers %>%
+  drop_na(DURATION) %>%
+  group_by(DURATION) %>%
+  summarise(n = n()) %>%
+  mutate(pct = n/sum(n)*100)
+plot_DURATION <- ggplot(DURATION, aes(x = "", y = pct, fill = DURATION)) +
+  geom_col(color = "white") +
+  scale_fill_manual(name = "Fishing Experience in Tampa Bay", values = c("#96CEF0","#3E9CD5","#0070B3","#004D79","#002439")) +
+  coord_polar(theta = "y", direction = -1) +
+  theme_void() +
+  theme(
+    strip.text = element_text(face = "bold", size = 12))
+ggsave(file='C:/Users/bsimm/Dropbox/Tampa Bay Estuary Program/Research/BSS/RESULTS/DURATION.svg', plot=plot_DURATION, width=175, height=65, units = "mm", bg = "transparent")
+write.csv(DURATION, file='C:/Users/bsimm/Dropbox/Tampa Bay Estuary Program/Research/BSS/RESULTS/DURATION.csv', row.names = FALSE)
+
+
+SKILL <- anglers %>%
+  drop_na(SKILL) %>%
+  group_by(SKILL) %>%
+  summarise(n = n()) %>%
+  mutate(pct = n/sum(n)*100)
+plot_SKILL <- ggplot(SKILL, aes(x = "", y = pct, fill = SKILL)) +
+  geom_col(color = "white") +
+  scale_fill_manual(name = "Skill at Fishing\n(self-assessed)", values = c("#96CEF0","#3E9CD5","#0070B3","#004D79","#002439")) +
+  coord_polar(theta = "y", direction = -1) +
+  theme_void() +
+  theme(
+    strip.text = element_text(face = "bold", size = 12))
+ggsave(file='C:/Users/bsimm/Dropbox/Tampa Bay Estuary Program/Research/BSS/RESULTS/SKILL.svg', plot=plot_SKILL, width=175, height=65, units = "mm", bg = "transparent")
+write.csv(SKILL, file='C:/Users/bsimm/Dropbox/Tampa Bay Estuary Program/Research/BSS/RESULTS/SKILL.csv', row.names = FALSE)
+
+
+AWARE <- anglers %>%
+  drop_na(AWARE) %>% 
+  group_by(AWARE) %>%
+  summarise(n = n()) %>%
+  mutate(pct = n/sum(n)*100)
+plot_AWARE <- ggplot(AWARE, aes(x = "", y = pct, fill = AWARE)) +
+  geom_col(color = "white") +
+  scale_fill_manual(name = "Awareness of Planned Tire Reef\nRemoval by Pinellas County", values = c("#004F7E","#02806E")) +
+  coord_polar(theta = "y", direction = -1) +
+  theme_void() +
+  theme(
+    strip.text = element_text(face = "bold", size = 12))
+ggsave(file='C:/Users/bsimm/Dropbox/Tampa Bay Estuary Program/Research/BSS/RESULTS/AWARE.svg', plot=plot_AWARE, width=175, height=65, units = "mm", bg = "transparent")
+write.csv(AWARE, file='C:/Users/bsimm/Dropbox/Tampa Bay Estuary Program/Research/BSS/RESULTS/AWARE.csv', row.names = FALSE)
+
+FUNDING <- anglers %>%
+  drop_na(FUNDING) %>% 
+  group_by(FUNDING) %>%
+  summarise(n = n()) %>%
+  mutate(pct = n/sum(n)*100)
+plot_FUNDING <- ggplot(FUNDING, aes(x = "", y = pct, fill = FUNDING)) +
+  geom_col(color = "white") +
+  scale_fill_manual(name = "Using Public Funds for\nArtificial Reef Management", values = c("#962C14","#DC9E00","#004F7E")) +
+  coord_polar(theta = "y", direction = -1) +
+  theme_void() +
+  theme(
+    strip.text = element_text(face = "bold", size = 12))
+ggsave(file='C:/Users/bsimm/Dropbox/Tampa Bay Estuary Program/Research/BSS/RESULTS/FUNDING.svg', plot=plot_FUNDING, width=175, height=65, units = "mm", bg = "transparent")
+write.csv(FUNDING, file='C:/Users/bsimm/Dropbox/Tampa Bay Estuary Program/Research/BSS/RESULTS/FUNDING.csv', row.names = FALSE)
+
+
+
+REASONS <- anglers %>%
+  select(REASON_FUN:REASON_OTHER) %>%
+  pivot_longer(cols = starts_with("REASON_"),
+               names_to = "REASON",
+               names_prefix = "REASON_",
+               values_to = "SELECTION") %>%
+  mutate(REASON = factor(REASON, levels = c("FUN","FOOD","SELL","CHARTER","OTHER"))) %>%
+  group_by(REASON) %>%
+  summarise(Count = sum(SELECTION == 1, na.rm = TRUE), 
+            .groups = "drop") %>%
+  mutate(pct = Count/485*100)
+plot_REASONS <- ggplot(REASONS, aes(x = REASON, y = pct)) +
+  geom_bar(stat="identity", fill = "#5C524F") +
+  ylim(0,100) + 
+  scale_x_discrete(labels = c(
+    "FUN" = "Fishing for\nfun or sport",
+    "FOOD" = "Fishing for\ntheir own food",
+    "SELL" = "Fishing for\nfood to sell",
+    "CHARTER" = "Providing chartered\nfishing trips",
+    "OTHER" = "Some other\nreason")) +
+  labs(x = "Typical Reason(s) for Fishing", y = "Anglers (%)") +
+  theme_classic() +
+  theme(axis.title = element_text(face = "bold"),
+        axis.title.x = element_text(margin = margin(t = 11)),
+        axis.title.y = element_text(margin = margin(r = 9)),
+        panel.background = element_rect(fill = "transparent"),
+        plot.background = element_rect(fill = "transparent", color = NA),
+        legend.background = element_rect(fill = "transparent", color = NA),
+        legend.box.background = element_rect(fill = "transparent", color = NA))
+ggsave(file='C:/Users/bsimm/Dropbox/Tampa Bay Estuary Program/Research/BSS/RESULTS/REASONS.svg', plot=plot_REASONS, width=170, height=100, units = "mm", bg = "transparent")
+write.csv(REASONS, file='C:/Users/bsimm/Dropbox/Tampa Bay Estuary Program/Research/BSS/RESULTS/REASONS.csv', row.names = FALSE)
+
+
+AR_USER <- anglers %>%
+  drop_na(AR_USER) %>% 
+  group_by(AR_USER) %>%
+  summarise(n = n()) %>%
+  mutate(pct = n/sum(n)*100)
+plot_AR_USER <- ggplot(AR_USER, aes(x = "", y = pct, fill = AR_USER)) +
+  geom_col(color = "white") +
+  scale_fill_manual(name = "Artificial Reef Use", values = c("#5C524F","#004F7E","#02806E")) +
+  coord_polar(theta = "y", direction = -1) +
+  theme_void() +
+  theme(
+    strip.text = element_text(face = "bold", size = 12))
+ggsave(file='C:/Users/bsimm/Dropbox/Tampa Bay Estuary Program/Research/BSS/RESULTS/AR_USER.svg', plot=plot_AR_USER, width=175, height=65, units = "mm", bg = "transparent")
+write.csv(AR_USER, file='C:/Users/bsimm/Dropbox/Tampa Bay Estuary Program/Research/BSS/RESULTS/AR_USER.csv', row.names = FALSE)
+
+
+
 ######### * TIRE REEF MANAGEMENT ACTIONS ######### 
 
 
@@ -182,6 +362,13 @@ ggplot(anglers_long, aes(x = ACTION, y = SUPPORT, fill = FREQUENCY, color = FREQ
 
 ######### * SPATIAL DISTRIBUTION ######### 
 
+### MAP ANGLER PRESENCE ###
+
+# Identify Support/Opposition of Complete Tire Removal
+anglers <- anglers %>%
+  mutate(REMOVEALL_CAT = ifelse(ACTION_REMOVEALL <= 4, "Oppose",
+                                 ifelse(ACTION_REMOVEALL >= 6, "Support", "Neutral")))
+
 # Reshape
 zones_long <- anglers %>%
   pivot_longer(cols = starts_with("ZONE_"),
@@ -195,7 +382,7 @@ zones <- zones_long %>%
   group_by(ZONE) %>%
   summarise(
     anglers = sum(PRESENCE)) %>%
-  mutate(pct = anglers/485*100)
+  mutate(pct = round(anglers/485*100, digits = 0))
 
 # Artificial reef anglers (n = 402)
 zones_AR <- zones_long %>%
@@ -203,7 +390,7 @@ zones_AR <- zones_long %>%
   group_by(ZONE) %>%
   summarise(
     AR_anglers = sum(PRESENCE)) %>%
-  mutate(AR_pct = AR_anglers/402*100)
+  mutate(AR_pct = round(AR_anglers/402*100, digits = 0))
 
 # Tire reef anglers (n = 71)
 zones_tire <- zones_long %>%
@@ -211,16 +398,183 @@ zones_tire <- zones_long %>%
   group_by(ZONE) %>%
   summarise(
     tire_anglers = sum(PRESENCE)) %>%
-  mutate(tire_pct = tire_anglers/71*100)
+  mutate(tire_pct = round(tire_anglers/71*100, digits = 0))
+
+# Complete Removal Opposition (n = 130)
+zones_oppose <- zones_long %>%
+  filter(REMOVEALL_CAT == "Oppose") %>%
+  group_by(ZONE) %>%
+  summarise(
+    oppose_anglers = sum(PRESENCE)) %>%
+  mutate(oppose_pct = round(oppose_anglers/130*100, digits = 0))
+
+# Complete Removal Support (n = 263)
+zones_support <- zones_long %>%
+  filter(REMOVEALL_CAT == "Support") %>%
+  group_by(ZONE) %>%
+  summarise(
+    support_anglers = sum(PRESENCE)) %>%
+  mutate(support_pct = round(support_anglers/263*100, digits = 0))
 
 # Combine
-zones <- cbind(zones, zones_AR, zones_tire)
+zones <- zones %>%
+  left_join(zones_AR, by = "ZONE") %>%
+  left_join(zones_tire, by = "ZONE") %>%
+  left_join(zones_support, by = "ZONE") %>%
+  left_join(zones_oppose, by = "ZONE") %>%
+  mutate(pct_group = ifelse(pct < 10, 1,
+                            ifelse(pct >= 10 & pct < 20, 2,
+                                   ifelse(pct >= 20 & pct < 30, 3,
+                                          ifelse(pct >= 30 & pct < 40, 4,
+                                                 ifelse(pct >= 40 & pct < 50, 5,
+                                                        ifelse(pct >= 50 & pct < 60, 6, 7)))))),
+         tire_pct_group = ifelse(tire_pct < 10, 1,
+                            ifelse(tire_pct >= 10 & tire_pct < 20, 2,
+                                   ifelse(tire_pct >= 20 & tire_pct < 30, 3,
+                                          ifelse(tire_pct >= 30 & tire_pct < 40, 4,
+                                                 ifelse(tire_pct >= 40 & tire_pct < 50, 5,
+                                                        ifelse(tire_pct >= 50 & tire_pct < 60, 6, 7)))))),
+         support_pct_group = ifelse(support_pct < 10, 1,
+                                 ifelse(support_pct >= 10 & support_pct < 20, 2,
+                                        ifelse(support_pct >= 20 & support_pct < 30, 3,
+                                               ifelse(support_pct >= 30 & support_pct < 40, 4,
+                                                      ifelse(support_pct >= 40 & support_pct < 50, 5,
+                                                             ifelse(support_pct >= 50 & support_pct < 60, 6, 7)))))),
+         oppose_pct_group = ifelse(oppose_pct < 10, 1,
+                                 ifelse(oppose_pct >= 10 & oppose_pct < 20, 2,
+                                        ifelse(oppose_pct >= 20 & oppose_pct < 30, 3,
+                                               ifelse(oppose_pct >= 30 & oppose_pct < 40, 4,
+                                                      ifelse(oppose_pct >= 40 & oppose_pct < 50, 5,
+                                                             ifelse(oppose_pct >= 50 & oppose_pct < 60, 6, 7)))))))
+         
+write.csv(zones, file='C:/Users/bsimm/Dropbox/Tampa Bay Estuary Program/Research/Angler Preferences/Results/zones.csv', row.names = FALSE)
 
 
-#write.csv(action_means, file='C:/Users/bsimm/Dropbox/Tampa Bay Estuary Program/Research/Angler Preferences/Results/action_means.csv', row.names = FALSE)
+### MAP SUPPORT FOR COMPLETE REMOVAL ###
+
+# Keep only zones that a person selected
+zones_present <- zones_long %>%
+  filter(PRESENCE == 1)
+
+# Calculate average support for complete removal by zone
+zone_means_all <- zones_present %>%
+  group_by(ZONE) %>%
+  summarise(
+    median = median(ACTION_REMOVEALL, na.rm = TRUE),
+    mean = mean(ACTION_REMOVEALL, na.rm = TRUE),
+    sd = sd(ACTION_REMOVEALL, na.rm = TRUE),
+    .groups = "drop")
+
+write.csv(zone_means_all, file='C:/Users/bsimm/Dropbox/Tampa Bay Estuary Program/Research/Angler Preferences/Results/zones_medians.csv', row.names = FALSE)
 
 
-# Create table of zone hotspots
-zones <- anglers %>%
-  group_by()
+zone_means_allpart <- zones_present %>%
+  group_by(ZONE) %>%
+  summarise(
+    median = median(ACTION_REMOVEPART, na.rm = TRUE),
+    mean = mean(ACTION_REMOVEPART, na.rm = TRUE),
+    sd = sd(ACTION_REMOVEPART, na.rm = TRUE),
+    .groups = "drop")
+
+
+zone_means_allstabilize <- zones_present %>%
+  group_by(ZONE) %>%
+  summarise(
+    median = median(ACTION_STABILIZE, na.rm = TRUE),
+    mean = mean(ACTION_STABILIZE, na.rm = TRUE),
+    sd = sd(ACTION_STABILIZE, na.rm = TRUE),
+    .groups = "drop")
+
+
+
+######### * PERCEPTIONS OF TIRE REEFS ######### 
+
+PERCEPTIONS_TIRES <- anglers %>%
+  select(TIRE_ATTRACTFISH:TIRE_RESTORETOOL) %>%
+  pivot_longer(cols = starts_with("TIRE_"),
+               names_to = "ASPECT",
+               names_prefix = "TIRE_",
+               values_to = "AGREEMENT") %>%
+  group_by(ASPECT, AGREEMENT) %>%
+  summarise(n = n()) %>%
+  mutate(pct = n/sum(n)*100)  %>%
+  mutate(ASPECT = factor(ASPECT, levels = c("WORSEWQ","DAMAGEHAB","ATTRACTFISH","SEDSTABILIZE","RESTORETOOL")),
+         AGREEMENT = factor(AGREEMENT, levels = c("Strongly agree","Agree","Somewhat agree","Somewhat disagree","Disagree","Strongly disagree")))
+plot_PERCEPTIONS_TIRES <- ggplot(PERCEPTIONS_TIRES, aes(x=ASPECT, y=pct, fill=AGREEMENT)) +
+  geom_bar(stat = "identity", position = "stack") +
+  geom_col(color = "white") +
+  scale_fill_manual(name = "Agreement", values = c("Strongly disagree" = "#983E12",
+                               "Disagree" = "#D7632B",
+                               "Somewhat disagree" = "#FFA67C",
+                               "Somewhat agree" = "#7CACFF",
+                               "Agree" = "#466EB4",
+                               "Strongly agree" = "#244276")) +
+  xlab("Perception of Tire Reefs") +
+  ylab("Anglers (%)") +
+  scale_x_discrete(labels = c(
+    "RESTORETOOL" = "... are useful for\nrestoring habitats\n(Positive)",
+    "SEDSTABILIZE" = "... stabilize sediments,\nprevent erosion\n(Positive)",
+    "ATTRACTFISH" = "... attract a lot of\ndesirable fish\n(Positive)",
+    "DAMAGEHAB" = "... damage natural\nhabitats\n(Negative)",
+    "WORSEWQ" = "... worsen water\nquality\n(Negative)")) +
+  #coord_flip() +
+  theme_classic() +
+  theme(axis.title = element_text(face = "bold"),
+        axis.title.x = element_text(margin = margin(t = 11)),
+        axis.title.y = element_text(margin = margin(r = 9)),
+        panel.background = element_rect(fill = "transparent"),
+        plot.background = element_rect(fill = "transparent", color = NA),
+        legend.background = element_rect(fill = "transparent", color = NA),
+        legend.box.background = element_rect(fill = "transparent", color = NA))
+ggsave(file='C:/Users/bsimm/Dropbox/Tampa Bay Estuary Program/Research/BSS/RESULTS/PERCEPTIONS_TIRES.svg', plot=plot_PERCEPTIONS_TIRES, width=175, height=75, units = "mm", bg = "transparent")
+write.csv(PERCEPTIONS_TIRES, file='C:/Users/bsimm/Dropbox/Tampa Bay Estuary Program/Research/BSS/RESULTS/PERCEPTIONS_TIRES.csv', row.names = FALSE)
+
+PERCEPTIONS_CONCRETE <- anglers %>%
+  select(CONCRETE_ATTRACTFISH:CONCRETE_RESTORETOOL) %>%
+  pivot_longer(cols = starts_with("CONCRETE_"),
+               names_to = "ASPECT",
+               names_prefix = "CONCRETE_",
+               values_to = "AGREEMENT") %>%
+  group_by(ASPECT, AGREEMENT) %>%
+  summarise(n = n()) %>%
+  mutate(pct = n/sum(n)*100)  %>%
+  mutate(ASPECT = factor(ASPECT, levels = c("WORSEWQ","DAMAGEHAB","ATTRACTFISH","SEDSTABILIZE","RESTORETOOL")),
+         AGREEMENT = factor(AGREEMENT, levels = c("Strongly agree","Agree","Somewhat agree","Somewhat disagree","Disagree","Strongly disagree")))
+plot_PERCEPTIONS_CONCRETE <- ggplot(PERCEPTIONS_CONCRETE, aes(x=ASPECT, y=pct, fill=AGREEMENT)) +
+  geom_bar(stat = "identity", position = "stack") +
+  geom_col(color = "white") +
+  scale_fill_manual(name = "Agreement", values = c("Strongly disagree" = "#983E12",
+                                                   "Disagree" = "#D7632B",
+                                                   "Somewhat disagree" = "#FFA67C",
+                                                   "Somewhat agree" = "#7CACFF",
+                                                   "Agree" = "#466EB4",
+                                                   "Strongly agree" = "#244276")) +
+  xlab("Perception of Concrete Reefs") +
+  ylab("Anglers (%)") +
+  scale_x_discrete(labels = c(
+    "RESTORETOOL" = "... are useful for\nrestoring habitats\n(Positive)",
+    "SEDSTABILIZE" = "... stabilize sediments,\nprevent erosion\n(Positive)",
+    "ATTRACTFISH" = "... attract a lot of\ndesirable fish\n(Positive)",
+    "DAMAGEHAB" = "... damage natural\nhabitats\n(Negative)",
+    "WORSEWQ" = "... worsen water\nquality\n(Negative)")) +
+  #coord_flip() +
+  theme_classic() +
+  theme(axis.title = element_text(face = "bold"),
+        axis.title.x = element_text(margin = margin(t = 11)),
+        axis.title.y = element_text(margin = margin(r = 9)),
+        panel.background = element_rect(fill = "transparent"),
+        plot.background = element_rect(fill = "transparent", color = NA),
+        legend.background = element_rect(fill = "transparent", color = NA),
+        legend.box.background = element_rect(fill = "transparent", color = NA))
+ggsave(file='C:/Users/bsimm/Dropbox/Tampa Bay Estuary Program/Research/BSS/RESULTS/PERCEPTIONS_CONCRETE.svg', plot=plot_PERCEPTIONS_CONCRETE, width=175, height=75, units = "mm", bg = "transparent")
+write.csv(PERCEPTIONS_CONCRETE, file='C:/Users/bsimm/Dropbox/Tampa Bay Estuary Program/Research/BSS/RESULTS/PERCEPTIONS_CONCRETE.csv', row.names = FALSE)
+
+
+
+
+
+
+
+
+
 
