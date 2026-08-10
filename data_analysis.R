@@ -357,6 +357,36 @@ ggplot(anglers_long, aes(x = ACTION, y = SUPPORT, fill = FREQUENCY, color = FREQ
         plot.background = element_rect(fill = "transparent", color = NA),
         legend.background = element_rect(fill = "transparent", color = NA),
         legend.box.background = element_rect(fill = "transparent", color = NA))
+# Boxplots (By Duration)
+ggplot(anglers_long %>%
+         # Reclassify groups
+         mutate(DURATION = as.character(DURATION)) %>%
+         mutate(DURATIONred = ifelse(is.na(DURATION), NA,
+                                     ifelse(DURATION == "Less than a year", "Less than 5 years",
+                                            ifelse(DURATION == "1 - 4 years", "Less than 5 years", DURATION)))) %>%
+         mutate(DURATIONred = factor(DURATIONred, levels = c("Less than 5 years","5 - 9 years","10 - 19 years","20 years or more"))), 
+       aes(x = ACTION, y = SUPPORT, fill = DURATIONred, color = DURATIONred)) +
+  geom_rect(aes(xmin = -Inf, xmax = Inf, ymin = 4, ymax = 6),inherit.aes = FALSE,fill = "grey90",alpha = 0.1) +
+  geom_boxplot(width = 0.7, outlier.shape = NA, alpha = 0.6) +  # hide outliers for cleaner look
+  geom_hline(yintercept = 5, linetype = "solid", color = "black") +
+  scale_fill_manual(name = "Fishing Experience", values = c("#96CEF0", "#3E9CD5", "#004D79","#002439")) +
+  scale_color_manual(name = "Fishing Experience", values = c("#96CEF0", "#3E9CD5", "#004D79","#002439")) +
+  scale_y_continuous(limits = c(0, 10), breaks = seq(0, 10, by = 2)) +
+  scale_x_discrete(labels = c(
+    "MONITOR" = "No action,\njust monitor",
+    "STABILIZE" = "Stabilize\nperimeter",
+    "COVER" = "Cover with\nrock or concrete",
+    "REMOVEPART" = "Remove some\nof the tires",
+    "REMOVEALL" = "Remove all\nof the tires")) +
+  labs(x = "Proposed Management Action", y = "Level of Support") +
+  theme_classic() +
+  theme(axis.title = element_text(face = "bold"),
+        axis.title.x = element_text(margin = margin(t = 11)),
+        axis.title.y = element_text(margin = margin(r = 9)),
+        panel.background = element_rect(fill = "transparent"),
+        plot.background = element_rect(fill = "transparent", color = NA),
+        legend.background = element_rect(fill = "transparent", color = NA),
+        legend.box.background = element_rect(fill = "transparent", color = NA))
 #ggsave(file='C:/Users/bsimm/Dropbox/Tampa Bay Estuary Program/Research/BSS/RESULTS/SHORE_DESIRE.svg', plot=plot_SHORE_DESIRE, width=200, height=125, units = "mm", bg = "transparent")
 
 
