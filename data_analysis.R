@@ -263,6 +263,46 @@ plot_HABITATS <- ggplot(HABITATS, aes(x=HABITAT, y=pct, fill=SELECTION)) +
 ggsave(file='C:/Users/bsimm/Dropbox/Tampa Bay Estuary Program/Research/BSS/RESULTS/REASONS.svg', plot=plot_REASONS, width=170, height=100, units = "mm", bg = "transparent")
 write.csv(REASONS, file='C:/Users/bsimm/Dropbox/Tampa Bay Estuary Program/Research/BSS/RESULTS/REASONS.csv', row.names = FALSE)
 
+REEFS <- anglers %>%
+  select(AR_MATERIAL_CONCRETE:AR_MATERIAL_TIRE) %>%
+  filter(!is.na(AR_MATERIAL_CONCRETE)) %>%
+  pivot_longer(cols = starts_with("AR_MATERIAL_"),
+               names_to = "AR_MATERIAL",
+               names_prefix = "AR_MATERIAL_",
+               values_to = "SELECTION") %>%
+  mutate(AR_MATERIAL = factor(AR_MATERIAL, levels = c("ROCK","CONCRETE","PREFAB","TIRE"))) %>%
+  mutate(SELECTION = factor(SELECTION, levels = c("Always","Often","Sometimes","Rarely","Never","Not sure"))) %>%
+  group_by(AR_MATERIAL, SELECTION) %>%
+  summarise(Count = n()) %>%
+  mutate(pct = Count/sum(Count)*100)
+plot_REEFS <- ggplot(REEFS, aes(x=AR_MATERIAL, y=pct, fill=SELECTION)) +
+  geom_bar(stat = "identity", position = "stack") +
+  geom_col(color = "white") +
+  scale_fill_manual(name = "Frequency of Use", values = c("Not sure" = "#AFAFAF",
+                                                          "Never" = "#96CEF0",
+                                                          "Rarely" = "#3E9CD5",
+                                                          "Sometimes" = "#0070B3",
+                                                          "Often" = "#004D79",
+                                                          "Always" = "#002439")) +
+  xlab("Artificial Reef Material") +
+  ylab("Anglers (%)") +
+  scale_x_discrete(labels = c(
+    "ROCK" = "Rocks",
+    "CONCRETE" = "Concrete",
+    "PREFAB" = "Prefabricated\n modules",
+    "TIRE" = "Tires")) +
+  theme_classic() +
+  theme(axis.title = element_text(face = "bold"),
+        axis.title.x = element_text(margin = margin(t = 11)),
+        axis.title.y = element_text(margin = margin(r = 9)),
+        panel.background = element_rect(fill = "transparent"),
+        plot.background = element_rect(fill = "transparent", color = NA),
+        legend.background = element_rect(fill = "transparent", color = NA),
+        legend.box.background = element_rect(fill = "transparent", color = NA))
+ggsave(file='C:/Users/bsimm/Dropbox/Tampa Bay Estuary Program/Research/BSS/RESULTS/REASONS.svg', plot=plot_REASONS, width=170, height=100, units = "mm", bg = "transparent")
+write.csv(REASONS, file='C:/Users/bsimm/Dropbox/Tampa Bay Estuary Program/Research/BSS/RESULTS/REASONS.csv', row.names = FALSE)
+
+
 AR_USER <- anglers %>%
   drop_na(AR_USER) %>% 
   group_by(AR_USER) %>%
