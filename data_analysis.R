@@ -224,6 +224,45 @@ ggsave(file='C:/Users/bsimm/Dropbox/Tampa Bay Estuary Program/Research/BSS/RESUL
 write.csv(REASONS, file='C:/Users/bsimm/Dropbox/Tampa Bay Estuary Program/Research/BSS/RESULTS/REASONS.csv', row.names = FALSE)
 
 
+HABITATS <- anglers %>%
+  select(HABITAT_SEAGRASS:HABITAT_INFRASTR) %>%
+  pivot_longer(cols = starts_with("HABITAT_"),
+               names_to = "HABITAT",
+               names_prefix = "HABITAT_",
+               values_to = "SELECTION") %>%
+  mutate(HABITAT = factor(HABITAT, levels = c("SEAGRASS","HARDBTM","ARTREEF","SHORELINE","RIVER","INFRASTR"))) %>%
+  mutate(SELECTION = factor(SELECTION, levels = c("Always","Often","Sometimes","Rarely","Never"))) %>%
+  group_by(HABITAT, SELECTION) %>%
+  summarise(Count = n()) %>%
+  mutate(pct = Count/sum(Count)*100)
+plot_HABITATS <- ggplot(HABITATS, aes(x=HABITAT, y=pct, fill=SELECTION)) +
+  geom_bar(stat = "identity", position = "stack") +
+  geom_col(color = "white") +
+  scale_fill_manual(name = "Frequency of Use", values = c("Never" = "#96CEF0",
+                                                   "Rarely" = "#3E9CD5",
+                                                   "Sometimes" = "#0070B3",
+                                                   "Often" = "#004D79",
+                                                   "Always" = "#002439")) +
+  xlab("Fishing Habitat") +
+  ylab("Anglers (%)") +
+  scale_x_discrete(labels = c(
+    "SEAGRASS" = "Seagrass bed",
+    "HARDBTM" = "Natural hard bottom\n(ledge, reef, sponge)",
+    "ARTREEF" = "Artificial reef\n(concrete, rock, reef ball)",
+    "SHORELINE" = "Natural shoreline\n(beach, mangrove, marsh)",
+    "RIVER" = "River or creek",
+    "INFRASTR" = "Exposed infrastructure\n(bridge, dock, pier)")) +
+  theme_classic() +
+  theme(axis.title = element_text(face = "bold"),
+        axis.title.x = element_text(margin = margin(t = 11)),
+        axis.title.y = element_text(margin = margin(r = 9)),
+        panel.background = element_rect(fill = "transparent"),
+        plot.background = element_rect(fill = "transparent", color = NA),
+        legend.background = element_rect(fill = "transparent", color = NA),
+        legend.box.background = element_rect(fill = "transparent", color = NA))
+ggsave(file='C:/Users/bsimm/Dropbox/Tampa Bay Estuary Program/Research/BSS/RESULTS/REASONS.svg', plot=plot_REASONS, width=170, height=100, units = "mm", bg = "transparent")
+write.csv(REASONS, file='C:/Users/bsimm/Dropbox/Tampa Bay Estuary Program/Research/BSS/RESULTS/REASONS.csv', row.names = FALSE)
+
 AR_USER <- anglers %>%
   drop_na(AR_USER) %>% 
   group_by(AR_USER) %>%
