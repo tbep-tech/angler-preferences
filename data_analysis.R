@@ -6,6 +6,12 @@ final_data <- read.csv("Data/data_clean.csv")
 anglers <- final_data[,-1]
 rownames(anglers) <- final_data[,1]
 
+tac_data <- read.csv("Data/tac_votes.csv")
+
+tac <- tac_data[,-1]
+rownames(tac) <- tac_data[,1]
+
+
 ######### * DATA PREPARATION ######### 
 
 ### Set factor levels ###
@@ -52,7 +58,9 @@ anglers <- anglers %>%
          TIRE_DAMAGEHAB = factor(TIRE_DAMAGEHAB, levels = c("Strongly disagree","Disagree","Somewhat disagree","Somewhat agree","Agree","Strongly agree")),
          TIRE_RESTORETOOL = factor(TIRE_RESTORETOOL, levels = c("Strongly disagree","Disagree","Somewhat disagree","Somewhat agree","Agree","Strongly agree")),
          FUNDING = factor(FUNDING, levels = c("Opposed","Neutral","Supportive")),
-         AWARE = factor(AWARE, levels = c("No","Yes")))
+         AWARE = factor(AWARE, levels = c("No","Yes"))) %>%
+  # Add distinguisher between anglers and TAC members
+  mutate(Sample = "Anglers")
 
 # Determine which anglers use tire reefs
 anglers <- anglers %>%
@@ -344,6 +352,25 @@ action_means_users <- anglers_long %>%
     sd = sd(SUPPORT, na.rm = TRUE),
     .groups = "drop")
 
+
+tac_long <- tac %>%
+  pivot_longer(cols = starts_with("ACTION_"),
+               names_to = "ACTION",
+               names_prefix = "ACTION_",
+               values_to = "SUPPORT") %>%
+  mutate(ACTION = factor(ACTION, levels = c("MONITOR","STABILIZE","COVER","REMOVEPART","REMOVEALL")))
+
+action_means_tac <- tac_long %>%
+  group_by(ACTION) %>%
+  summarise(
+    mean = mean(SUPPORT, na.rm = TRUE),
+    sd = sd(SUPPORT, na.rm = TRUE),
+    .groups = "drop")
+
+
+merged_long <- bind_rows(anglers_long %>% select(Sample, ACTION, SUPPORT), tac_long %>% select(Sample, ACTION, SUPPORT))
+
+
 #write.csv(action_means, file='C:/Users/bsimm/Dropbox/Tampa Bay Estuary Program/Research/Angler Preferences/Results/action_means.csv', row.names = FALSE)
 
 # Boxplots (All)
@@ -351,6 +378,50 @@ ggplot(anglers_long, aes(x = ACTION, y = SUPPORT)) +
   geom_rect(aes(xmin = -Inf, xmax = Inf, ymin = 4, ymax = 6),inherit.aes = FALSE,fill = "grey90",alpha = 0.1) +
   geom_boxplot(width = 0.7, outlier.shape = NA, fill = "#5C524F", color = "#5C524F", alpha = 0.6) +  # hide outliers for cleaner look
   geom_hline(yintercept = 5, linetype = "solid", color = "black") +
+  scale_y_continuous(limits = c(0, 10), breaks = seq(0, 10, by = 2)) +
+  scale_x_discrete(labels = c(
+    "MONITOR" = "No action,\njust monitor",
+    "STABILIZE" = "Stabilize\nperimeter",
+    "COVER" = "Cover with\nrock or concrete",
+    "REMOVEPART" = "Remove some\nof the tires",
+    "REMOVEALL" = "Remove all\nof the tires")) +
+  labs(x = "Proposed Management Action", y = "Level of Support") +
+  theme_classic() +
+  theme(axis.title = element_text(face = "bold"),
+        axis.title.x = element_text(margin = margin(t = 11)),
+        axis.title.y = element_text(margin = margin(r = 9)),
+        panel.background = element_rect(fill = "transparent"),
+        plot.background = element_rect(fill = "transparent", color = NA),
+        legend.background = element_rect(fill = "transparent", color = NA),
+        legend.box.background = element_rect(fill = "transparent", color = NA))
+# Boxplots (TAC)
+ggplot(tac_long, aes(x = ACTION, y = SUPPORT)) +
+  geom_rect(aes(xmin = -Inf, xmax = Inf, ymin = 4, ymax = 6),inherit.aes = FALSE,fill = "grey90",alpha = 0.1) +
+  geom_boxplot(width = 0.7, outlier.shape = NA, fill = "#5C524F", color = "#5C524F", alpha = 0.6) +  # hide outliers for cleaner look
+  geom_hline(yintercept = 5, linetype = "solid", color = "black") +
+  scale_y_continuous(limits = c(0, 10), breaks = seq(0, 10, by = 2)) +
+  scale_x_discrete(labels = c(
+    "MONITOR" = "No action,\njust monitor",
+    "STABILIZE" = "Stabilize\nperimeter",
+    "COVER" = "Cover with\nrock or concrete",
+    "REMOVEPART" = "Remove some\nof the tires",
+    "REMOVEALL" = "Remove all\nof the tires")) +
+  labs(x = "Proposed Management Action", y = "Level of Support") +
+  theme_classic() +
+  theme(axis.title = element_text(face = "bold"),
+        axis.title.x = element_text(margin = margin(t = 11)),
+        axis.title.y = element_text(margin = margin(r = 9)),
+        panel.background = element_rect(fill = "transparent"),
+        plot.background = element_rect(fill = "transparent", color = NA),
+        legend.background = element_rect(fill = "transparent", color = NA),
+        legend.box.background = element_rect(fill = "transparent", color = NA))
+# Boxplots (By Sample)
+ggplot(merged_long, aes(x = ACTION, y = SUPPORT, fill = Sample, color = Sample)) +
+  geom_rect(aes(xmin = -Inf, xmax = Inf, ymin = 4, ymax = 6),inherit.aes = FALSE,fill = "grey90",alpha = 0.1) +
+  geom_boxplot(width = 0.7, outlier.shape = NA, alpha = 0.6) +  # hide outliers for cleaner look
+  geom_hline(yintercept = 5, linetype = "solid", color = "black") +
+  scale_fill_manual(name = "Sample", values = c("#004F7E", "#5C524F")) +
+  scale_color_manual(name = "Sample", values = c("#004F7E", "#5C524F")) +
   scale_y_continuous(limits = c(0, 10), breaks = seq(0, 10, by = 2)) +
   scale_x_discrete(labels = c(
     "MONITOR" = "No action,\njust monitor",
