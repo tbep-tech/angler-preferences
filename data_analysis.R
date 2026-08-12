@@ -396,10 +396,10 @@ ggplot(anglers_long, aes(x = ACTION, y = SUPPORT)) +
         legend.box.background = element_rect(fill = "transparent", color = NA))
 # Boxplots (TAC)
 ggplot(tac_long, aes(x = ACTION, y = SUPPORT)) +
-  geom_rect(aes(xmin = -Inf, xmax = Inf, ymin = 4, ymax = 6),inherit.aes = FALSE,fill = "grey90",alpha = 0.1) +
+  #geom_rect(aes(xmin = -Inf, xmax = Inf, ymin = 4.5, ymax = 6.5),inherit.aes = FALSE,fill = "grey90",alpha = 0.1) +
   geom_boxplot(width = 0.7, outlier.shape = NA, fill = "#5C524F", color = "#5C524F", alpha = 0.6) +  # hide outliers for cleaner look
-  geom_hline(yintercept = 5, linetype = "solid", color = "black") +
-  scale_y_continuous(limits = c(0, 10), breaks = seq(0, 10, by = 2)) +
+  #geom_hline(yintercept = 5.5, linetype = "solid", color = "black") +
+  scale_y_continuous(limits = c(1, 10), breaks = seq(1, 10, by = 1)) +
   scale_x_discrete(labels = c(
     "MONITOR" = "No action,\njust monitor",
     "STABILIZE" = "Stabilize\nperimeter",
