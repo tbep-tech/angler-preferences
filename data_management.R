@@ -65,7 +65,7 @@ anglerdata <- anglerdata %>%
   # For all MAP columns, convert "On" to 1, "Off" to 0
   mutate(across(starts_with("MAP_"), ~ as.integer(. == "On"))) %>%
   mutate(PRESSURES_N = PRESSURES_1 + PRESSURES_2 + PRESSURES_3 + PRESSURES_4 + PRESSURES_5 + PRESSURES_6 + PRESSURES_7 + PRESSURES_8,
-         HABITATS_OFTEN_N = rowSums(across(starts_with("HABITAT_"), ~ . %in% c("Often", "Always")), na.rm = TRUE),
+         HABITATS_OFTEN_N = rowSums(across(starts_with("HABITATS_"), ~ . %in% c("Often", "Always")), na.rm = TRUE),
          SPECIES_OFTEN_N = rowSums(across(starts_with("SPECIES_"), ~ . %in% c("Often", "Always")), na.rm = TRUE),
          ZONES_N = rowSums(pick(starts_with("MAP_")), na.rm = TRUE))
          
