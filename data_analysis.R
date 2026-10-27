@@ -120,6 +120,22 @@ ggsave(file='C:/Users/bsimm/Dropbox/Tampa Bay Estuary Program/Research/Angler Pr
 write.csv(COUNTY, file='C:/Users/bsimm/Dropbox/Tampa Bay Estuary Program/Research/Angler Preferences/Results/COUNTY.csv', row.names = FALSE)
 
 
+LICENSE <- anglers %>%
+  drop_na(LICENSE) %>% 
+  group_by(LICENSE) %>%
+  summarise(n = n()) %>%
+  mutate(pct = n/sum(n)*100)
+plot_LICENSE <- ggplot(LICENSE, aes(x = "", y = pct, fill = LICENSE)) +
+  geom_col(color = "white") +
+  scale_fill_manual(name = "License Type", values = c("#004F7E","#5C524F","#02806E","#DC9E00")) +
+  coord_polar(theta = "y", direction = -1) +
+  theme_void() +
+  theme(
+    strip.text = element_text(face = "bold", size = 12))
+ggsave(file='C:/Users/bsimm/Dropbox/Tampa Bay Estuary Program/Research/Angler Preferences/Results/LICENSE.svg', plot=plot_LICENSE, width=175, height=65, units = "mm", bg = "transparent")
+write.csv(LICENSE, file='C:/Users/bsimm/Dropbox/Tampa Bay Estuary Program/Research/Angler Preferences/Results/LICENSE.csv', row.names = FALSE)
+
+
 ######### * -- ZIP CODES ######### 
 
 library(sf)
@@ -346,6 +362,14 @@ plot_REASONS <- ggplot(REASONS, aes(x = REASON, y = pct)) +
 ggsave(file='C:/Users/bsimm/Dropbox/Tampa Bay Estuary Program/Research/Angler Preferences/Results/REASONS.svg', plot=plot_REASONS, width=170, height=100, units = "mm", bg = "transparent")
 write.csv(REASONS, file='C:/Users/bsimm/Dropbox/Tampa Bay Estuary Program/Research/Angler Preferences/Results/REASONS.csv', row.names = FALSE)
 
+REASONS_N <- anglers %>%
+  drop_na(REASONS_N) %>%
+  group_by(REASONS_N) %>%
+  summarise(n = n()) %>%
+  mutate(pct = n/sum(n)*100)
+write.csv(REASONS_N, file='C:/Users/bsimm/Dropbox/Tampa Bay Estuary Program/Research/Angler Preferences/Results/REASONS_N.csv', row.names = FALSE)
+
+
 SPECIES <- anglers %>%
   select(SPECIES_SNOOK:SPECIES_OTHER) %>%
   pivot_longer(cols = starts_with("SPECIES_"),
@@ -385,6 +409,66 @@ plot_SPECIES <- ggplot(SPECIES, aes(x=SPECIES, y=pct, fill=SELECTION)) +
 ggsave(file='C:/Users/bsimm/Dropbox/Tampa Bay Estuary Program/Research/Angler Preferences/Results/SPECIES.svg', plot=plot_SPECIES, width=170, height=100, units = "mm", bg = "transparent")
 write.csv(SPECIES, file='C:/Users/bsimm/Dropbox/Tampa Bay Estuary Program/Research/Angler Preferences/Results/SPECIES.csv', row.names = FALSE)
 
+SPECIES_OFTEN_N <- anglers %>%
+  drop_na(SPECIES_OFTEN_N) %>%
+  group_by(SPECIES_OFTEN_N) %>%
+  summarise(n = n()) %>%
+  mutate(pct = n/sum(n)*100)
+plot_SPECIES_OFTEN_N <- ggplot(SPECIES_OFTEN_N, aes(x = SPECIES_OFTEN_N, y = n)) +
+  geom_bar(stat="identity", fill = "#5C524F") +
+  ylim(0,150) + 
+  labs(x = "Number of Species Often Targeted", y = "Anglers") +
+  theme_classic() +
+  theme(axis.title = element_text(face = "bold"),
+        axis.title.x = element_text(margin = margin(t = 11)),
+        axis.title.y = element_text(margin = margin(r = 9)),
+        panel.background = element_rect(fill = "transparent"),
+        plot.background = element_rect(fill = "transparent", color = NA),
+        legend.background = element_rect(fill = "transparent", color = NA),
+        legend.box.background = element_rect(fill = "transparent", color = NA))
+ggsave(file='C:/Users/bsimm/Dropbox/Tampa Bay Estuary Program/Research/Angler Preferences/Results/SPECIES_OFTEN_N.svg', plot=plot_SPECIES_OFTEN_N, width=170, height=100, units = "mm", bg = "transparent")
+write.csv(SPECIES_OFTEN_N, file='C:/Users/bsimm/Dropbox/Tampa Bay Estuary Program/Research/Angler Preferences/Results/SPECIES_OFTEN_N.csv', row.names = FALSE)
+
+
+SPECIES_OTHER <- anglers %>%
+  select(SPECIES_OTHER_TEXT) %>%
+  drop_na(SPECIES_OTHER_TEXT) %>%
+  group_by(SPECIES_OTHER_TEXT) %>%
+  summarise(n = n()) %>%
+  arrange(desc(SPECIES_OTHER_TEXT))
+write.csv(SPECIES_OTHER, file='C:/Users/bsimm/Dropbox/Tampa Bay Estuary Program/Research/Angler Preferences/Results/SPECIES_OTHER.csv', row.names = FALSE)
+
+
+
+LOCATIONS <- anglers %>%
+  select(LOCATION_VESSEL:LOCATION_PIER) %>%
+  pivot_longer(cols = starts_with("LOCATION_"),
+               names_to = "LOCATION",
+               names_prefix = "LOCATION_",
+               values_to = "SELECTION") %>%
+  mutate(LOCATION = factor(LOCATION, levels = c("VESSEL","SHORE","PIER"))) %>%
+  group_by(LOCATION) %>%
+  summarise(Count = sum(SELECTION == 1, na.rm = TRUE), 
+            .groups = "drop") %>%
+  mutate(pct = Count/485*100)
+plot_LOCATIONS <- ggplot(LOCATIONS, aes(x = LOCATION, y = pct)) +
+  geom_bar(stat="identity", fill = "#5C524F") +
+  ylim(0,100) + 
+  scale_x_discrete(labels = c(
+    "VESSEL" = "Boat, kayak, or canoe",
+    "SHORE" = "Shoreline or bank of a water body",
+    "PIER" = "Fishing pier or boardwalk")) +
+  labs(x = "Typical Location(s) for Fishing", y = "Anglers (%)") +
+  theme_classic() +
+  theme(axis.title = element_text(face = "bold"),
+        axis.title.x = element_text(margin = margin(t = 11)),
+        axis.title.y = element_text(margin = margin(r = 9)),
+        panel.background = element_rect(fill = "transparent"),
+        plot.background = element_rect(fill = "transparent", color = NA),
+        legend.background = element_rect(fill = "transparent", color = NA),
+        legend.box.background = element_rect(fill = "transparent", color = NA))
+ggsave(file='C:/Users/bsimm/Dropbox/Tampa Bay Estuary Program/Research/Angler Preferences/Results/LOCATIONS.svg', plot=plot_LOCATIONS, width=170, height=100, units = "mm", bg = "transparent")
+write.csv(LOCATIONS, file='C:/Users/bsimm/Dropbox/Tampa Bay Estuary Program/Research/Angler Preferences/Results/LOCATIONS.csv', row.names = FALSE)
 
 
 HABITATS <- anglers %>%
@@ -425,6 +509,26 @@ plot_HABITATS <- ggplot(HABITATS, aes(x=HABITAT, y=pct, fill=SELECTION)) +
         legend.box.background = element_rect(fill = "transparent", color = NA))
 ggsave(file='C:/Users/bsimm/Dropbox/Tampa Bay Estuary Program/Research/Angler Preferences/Results/HABITATS.svg', plot=plot_HABITATS, width=170, height=100, units = "mm", bg = "transparent")
 write.csv(HABITATS, file='C:/Users/bsimm/Dropbox/Tampa Bay Estuary Program/Research/Angler Preferences/Results/HABITATS.csv', row.names = FALSE)
+
+HABITATS_OFTEN_N <- anglers %>%
+  drop_na(HABITATS_OFTEN_N) %>%
+  group_by(HABITATS_OFTEN_N) %>%
+  summarise(n = n()) %>%
+  mutate(pct = n/sum(n)*100)
+plot_HABITATS_OFTEN_N <- ggplot(HABITATS_OFTEN_N, aes(x = HABITATS_OFTEN_N, y = n)) +
+  geom_bar(stat="identity", fill = "#5C524F") +
+  ylim(0,150) + 
+  labs(x = "Number of Habitats Often Used", y = "Anglers") +
+  theme_classic() +
+  theme(axis.title = element_text(face = "bold"),
+        axis.title.x = element_text(margin = margin(t = 11)),
+        axis.title.y = element_text(margin = margin(r = 9)),
+        panel.background = element_rect(fill = "transparent"),
+        plot.background = element_rect(fill = "transparent", color = NA),
+        legend.background = element_rect(fill = "transparent", color = NA),
+        legend.box.background = element_rect(fill = "transparent", color = NA))
+ggsave(file='C:/Users/bsimm/Dropbox/Tampa Bay Estuary Program/Research/Angler Preferences/Results/HABITATS_OFTEN_N.svg', plot=plot_HABITATS_OFTEN_N, width=170, height=100, units = "mm", bg = "transparent")
+write.csv(HABITATS_OFTEN_N, file='C:/Users/bsimm/Dropbox/Tampa Bay Estuary Program/Research/Angler Preferences/Results/HABITATS_OFTEN_N_N.csv', row.names = FALSE)
 
 
 
@@ -1332,11 +1436,6 @@ ggsave(file='C:/Users/bsimm/Dropbox/Tampa Bay Estuary Program/Research/Angler Pr
 
 ### MAP ANGLER PRESENCE ###
 
-# Identify Support/Opposition of Complete Tire Removal
-anglers <- anglers %>%
-  mutate(REMOVEALL_CAT = ifelse(ACTION_REMOVEALL <= 4, "Oppose",
-                                 ifelse(ACTION_REMOVEALL >= 6, "Support", "Neutral")))
-
 # Reshape
 zones_long <- anglers %>%
   pivot_longer(cols = starts_with("ZONE_"),
@@ -1352,13 +1451,53 @@ zones <- zones_long %>%
     anglers = sum(PRESENCE)) %>%
   mutate(pct = round(anglers/485*100, digits = 0))
 
-# Artificial reef anglers (n = 402)
-zones_AR <- zones_long %>%
-  filter(AR_USER != "Non-user") %>%
+# Seagrass anglers (n = 308 - Often or Always)
+zones_SEAGRASS <- zones_long %>%
+  filter(HABITAT_SEAGRASS == "Often" | HABITAT_SEAGRASS == "Always") %>%
   group_by(ZONE) %>%
   summarise(
-    AR_anglers = sum(PRESENCE)) %>%
-  mutate(AR_pct = round(AR_anglers/402*100, digits = 0))
+    SEAGRASS_anglers = sum(PRESENCE)) %>%
+  mutate(SEAGRASS_pct = round(SEAGRASS_anglers/308*100, digits = 0))
+
+# HARDBTM anglers (n = 177 - Often or Always)
+zones_HARDBTM <- zones_long %>%
+  filter(HABITAT_HARDBTM == "Often" | HABITAT_HARDBTM == "Always") %>%
+  group_by(ZONE) %>%
+  summarise(
+    HARDBTM_anglers = sum(PRESENCE)) %>%
+  mutate(HARDBTM_pct = round(HARDBTM_anglers/177*100, digits = 0))
+
+# ARTREEF anglers (n = 122 - Often or Always)
+zones_ARTREEF <- zones_long %>%
+  filter(HABITAT_ARTREEF == "Often" | HABITAT_ARTREEF == "Always") %>%
+  group_by(ZONE) %>%
+  summarise(
+    ARTREEF_anglers = sum(PRESENCE)) %>%
+  mutate(ARTREEF_pct = round(ARTREEF_anglers/122*100, digits = 0))
+
+# RIVER anglers (n = 111 - Often or Always)
+zones_RIVER <- zones_long %>%
+  filter(HABITAT_RIVER == "Often" | HABITAT_RIVER == "Always") %>%
+  group_by(ZONE) %>%
+  summarise(
+    RIVER_anglers = sum(PRESENCE)) %>%
+  mutate(RIVER_pct = round(RIVER_anglers/111*100, digits = 0))
+
+# SHORELINE anglers (n = 374 - Often or Always)
+zones_SHORELINE <- zones_long %>%
+  filter(HABITAT_SHORELINE == "Often" | HABITAT_SHORELINE == "Always") %>%
+  group_by(ZONE) %>%
+  summarise(
+    SHORELINE_anglers = sum(PRESENCE)) %>%
+  mutate(SHORELINE_pct = round(SHORELINE_anglers/374*100, digits = 0))
+
+# INFRASTR anglers (n = 281 - Often or Always)
+zones_INFRASTR <- zones_long %>%
+  filter(HABITAT_INFRASTR == "Often" | HABITAT_INFRASTR == "Always") %>%
+  group_by(ZONE) %>%
+  summarise(
+    INFRASTR_anglers = sum(PRESENCE)) %>%
+  mutate(INFRASTR_pct = round(INFRASTR_anglers/281*100, digits = 0))
 
 # Tire reef anglers (n = 71)
 zones_tire <- zones_long %>%
@@ -1368,98 +1507,66 @@ zones_tire <- zones_long %>%
     tire_anglers = sum(PRESENCE)) %>%
   mutate(tire_pct = round(tire_anglers/71*100, digits = 0))
 
-# Complete Removal Opposition (n = 130)
-zones_oppose <- zones_long %>%
-  filter(REMOVEALL_CAT == "Oppose") %>%
-  group_by(ZONE) %>%
-  summarise(
-    oppose_anglers = sum(PRESENCE)) %>%
-  mutate(oppose_pct = round(oppose_anglers/130*100, digits = 0))
 
-# Complete Removal Support (n = 263)
-zones_support <- zones_long %>%
-  filter(REMOVEALL_CAT == "Support") %>%
-  group_by(ZONE) %>%
-  summarise(
-    support_anglers = sum(PRESENCE)) %>%
-  mutate(support_pct = round(support_anglers/263*100, digits = 0))
 
 # Combine
 zones <- zones %>%
-  left_join(zones_AR, by = "ZONE") %>%
+  left_join(zones_SEAGRASS, by = "ZONE") %>%
+  left_join(zones_HARDBTM, by = "ZONE") %>%
+  left_join(zones_ARTREEF, by = "ZONE") %>%
+  left_join(zones_RIVER, by = "ZONE") %>%
+  left_join(zones_SHORELINE, by = "ZONE") %>%
+  left_join(zones_INFRASTR, by = "ZONE") %>%
   left_join(zones_tire, by = "ZONE") %>%
-  left_join(zones_support, by = "ZONE") %>%
-  left_join(zones_oppose, by = "ZONE") %>%
   mutate(pct_group = ifelse(pct < 10, 1,
                             ifelse(pct >= 10 & pct < 20, 2,
                                    ifelse(pct >= 20 & pct < 30, 3,
                                           ifelse(pct >= 30 & pct < 40, 4,
                                                  ifelse(pct >= 40 & pct < 50, 5,
                                                         ifelse(pct >= 50 & pct < 60, 6, 7)))))),
+         SEAGRASS_pct_group = ifelse(SEAGRASS_pct < 10, 1,
+                                     ifelse(SEAGRASS_pct >= 10 & SEAGRASS_pct < 20, 2,
+                                            ifelse(SEAGRASS_pct >= 20 & SEAGRASS_pct < 30, 3,
+                                                   ifelse(SEAGRASS_pct >= 30 & SEAGRASS_pct < 40, 4,
+                                                          ifelse(SEAGRASS_pct >= 40 & SEAGRASS_pct < 50, 5,
+                                                                 ifelse(SEAGRASS_pct >= 50 & SEAGRASS_pct < 60, 6, 7)))))),
+         HARDBTM_pct_group = ifelse(HARDBTM_pct < 10, 1,
+                                     ifelse(HARDBTM_pct >= 10 & HARDBTM_pct < 20, 2,
+                                            ifelse(HARDBTM_pct >= 20 & HARDBTM_pct < 30, 3,
+                                                   ifelse(HARDBTM_pct >= 30 & HARDBTM_pct < 40, 4,
+                                                          ifelse(HARDBTM_pct >= 40 & HARDBTM_pct < 50, 5,
+                                                                 ifelse(HARDBTM_pct >= 50 & HARDBTM_pct < 60, 6, 7)))))),
+         ARTREEF_pct_group = ifelse(ARTREEF_pct < 10, 1,
+                                     ifelse(ARTREEF_pct >= 10 & ARTREEF_pct < 20, 2,
+                                            ifelse(ARTREEF_pct >= 20 & ARTREEF_pct < 30, 3,
+                                                   ifelse(ARTREEF_pct >= 30 & ARTREEF_pct < 40, 4,
+                                                          ifelse(ARTREEF_pct >= 40 & ARTREEF_pct < 50, 5,
+                                                                 ifelse(ARTREEF_pct >= 50 & ARTREEF_pct < 60, 6, 7)))))),
+         RIVER_pct_group = ifelse(RIVER_pct < 10, 1,
+                                     ifelse(RIVER_pct >= 10 & RIVER_pct < 20, 2,
+                                            ifelse(RIVER_pct >= 20 & RIVER_pct < 30, 3,
+                                                   ifelse(RIVER_pct >= 30 & RIVER_pct < 40, 4,
+                                                          ifelse(RIVER_pct >= 40 & RIVER_pct < 50, 5,
+                                                                 ifelse(RIVER_pct >= 50 & RIVER_pct < 60, 6, 7)))))),
+         SHORELINE_pct_group = ifelse(SHORELINE_pct < 10, 1,
+                                     ifelse(SHORELINE_pct >= 10 & SHORELINE_pct < 20, 2,
+                                            ifelse(SHORELINE_pct >= 20 & SHORELINE_pct < 30, 3,
+                                                   ifelse(SHORELINE_pct >= 30 & SHORELINE_pct < 40, 4,
+                                                          ifelse(SHORELINE_pct >= 40 & SHORELINE_pct < 50, 5,
+                                                                 ifelse(SHORELINE_pct >= 50 & SHORELINE_pct < 60, 6, 7)))))),
+         INFRASTR_pct_group = ifelse(INFRASTR_pct < 10, 1,
+                                     ifelse(INFRASTR_pct >= 10 & INFRASTR_pct < 20, 2,
+                                            ifelse(INFRASTR_pct >= 20 & INFRASTR_pct < 30, 3,
+                                                   ifelse(INFRASTR_pct >= 30 & INFRASTR_pct < 40, 4,
+                                                          ifelse(INFRASTR_pct >= 40 & INFRASTR_pct < 50, 5,
+                                                                 ifelse(INFRASTR_pct >= 50 & INFRASTR_pct < 60, 6, 7)))))),
          tire_pct_group = ifelse(tire_pct < 10, 1,
                             ifelse(tire_pct >= 10 & tire_pct < 20, 2,
                                    ifelse(tire_pct >= 20 & tire_pct < 30, 3,
                                           ifelse(tire_pct >= 30 & tire_pct < 40, 4,
                                                  ifelse(tire_pct >= 40 & tire_pct < 50, 5,
-                                                        ifelse(tire_pct >= 50 & tire_pct < 60, 6, 7)))))),
-         support_pct_group = ifelse(support_pct < 10, 1,
-                                 ifelse(support_pct >= 10 & support_pct < 20, 2,
-                                        ifelse(support_pct >= 20 & support_pct < 30, 3,
-                                               ifelse(support_pct >= 30 & support_pct < 40, 4,
-                                                      ifelse(support_pct >= 40 & support_pct < 50, 5,
-                                                             ifelse(support_pct >= 50 & support_pct < 60, 6, 7)))))),
-         oppose_pct_group = ifelse(oppose_pct < 10, 1,
-                                 ifelse(oppose_pct >= 10 & oppose_pct < 20, 2,
-                                        ifelse(oppose_pct >= 20 & oppose_pct < 30, 3,
-                                               ifelse(oppose_pct >= 30 & oppose_pct < 40, 4,
-                                                      ifelse(oppose_pct >= 40 & oppose_pct < 50, 5,
-                                                             ifelse(oppose_pct >= 50 & oppose_pct < 60, 6, 7)))))))
+                                                        ifelse(tire_pct >= 50 & tire_pct < 60, 6, 7)))))))
          
 write.csv(zones, file='C:/Users/bsimm/Dropbox/Tampa Bay Estuary Program/Research/Angler Preferences/Results/zones.csv', row.names = FALSE)
-
-
-### MAP SUPPORT FOR COMPLETE REMOVAL ###
-
-# Keep only zones that a person selected
-zones_present <- zones_long %>%
-  filter(PRESENCE == 1)
-
-# Calculate average support for complete removal by zone
-zone_means_all <- zones_present %>%
-  group_by(ZONE) %>%
-  summarise(
-    median = median(ACTION_REMOVEALL, na.rm = TRUE),
-    mean = mean(ACTION_REMOVEALL, na.rm = TRUE),
-    sd = sd(ACTION_REMOVEALL, na.rm = TRUE),
-    .groups = "drop")
-
-write.csv(zone_means_all, file='C:/Users/bsimm/Dropbox/Tampa Bay Estuary Program/Research/Angler Preferences/Results/zones_medians.csv', row.names = FALSE)
-
-
-zone_means_allpart <- zones_present %>%
-  group_by(ZONE) %>%
-  summarise(
-    median = median(ACTION_REMOVEPART, na.rm = TRUE),
-    mean = mean(ACTION_REMOVEPART, na.rm = TRUE),
-    sd = sd(ACTION_REMOVEPART, na.rm = TRUE),
-    .groups = "drop")
-
-
-zone_means_allstabilize <- zones_present %>%
-  group_by(ZONE) %>%
-  summarise(
-    median = median(ACTION_STABILIZE, na.rm = TRUE),
-    mean = mean(ACTION_STABILIZE, na.rm = TRUE),
-    sd = sd(ACTION_STABILIZE, na.rm = TRUE),
-    .groups = "drop")
-
-
-
-
-
-
-
-
-
 
 
