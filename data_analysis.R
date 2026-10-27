@@ -104,6 +104,22 @@ ggsave(file='C:/Users/bsimm/Dropbox/Tampa Bay Estuary Program/Research/Angler Pr
 write.csv(GENDER, file='C:/Users/bsimm/Dropbox/Tampa Bay Estuary Program/Research/Angler Preferences/Results/GENDER.csv', row.names = FALSE)
 
 
+INCOME <- anglers %>%
+  drop_na(INCOME) %>%
+  group_by(INCOME) %>%
+  summarise(n = n()) %>%
+  mutate(pct = n/sum(n)*100)
+plot_INCOME <- ggplot(INCOME, aes(x = "", y = pct, fill = INCOME)) +
+  geom_col(color = "white") +
+  scale_fill_manual(name = "Annual Income", values = c("#96CEF0","#3E9CD5","#0070B3","#004D79","#002439")) +
+  coord_polar(theta = "y", direction = -1) +
+  theme_void() +
+  theme(
+    strip.text = element_text(face = "bold", size = 12))
+ggsave(file='C:/Users/bsimm/Dropbox/Tampa Bay Estuary Program/Research/Angler Preferences/Results/INCOME.svg', plot=plot_INCOME, width=175, height=65, units = "mm", bg = "transparent")
+write.csv(INCOME, file='C:/Users/bsimm/Dropbox/Tampa Bay Estuary Program/Research/Angler Preferences/Results/INCOME.csv', row.names = FALSE)
+
+
 COUNTY <- anglers %>%
   drop_na(COUNTY) %>% 
   group_by(COUNTY) %>%
@@ -326,6 +342,23 @@ plot_PRESSURES <- ggplot(PRESSURES, aes(x = PRESSURE, y = pct)) +
         legend.box.background = element_rect(fill = "transparent", color = NA))
 ggsave(file='C:/Users/bsimm/Dropbox/Tampa Bay Estuary Program/Research/Angler Preferences/Results/PRESSURES.svg', plot=plot_PRESSURES, width=170, height=100, units = "mm", bg = "transparent")
 write.csv(PRESSURES, file='C:/Users/bsimm/Dropbox/Tampa Bay Estuary Program/Research/Angler Preferences/Results/PRESSURES.csv', row.names = FALSE)
+
+
+# Excludes 28 estimates above $1,000; median = $100
+plot_COSTS <- ggplot(anglers, aes(x = COSTS)) +
+  geom_histogram(binwidth = 50, fill = "#5C524F", color = "white", linewidth = 0.1) +
+  geom_vline(xintercept = median(anglers$COSTS, na.rm = TRUE),color = "red",linetype = "dashed",linewidth = 1) +
+  coord_cartesian(xlim = c(0, 1000)) +
+  ylim(0, 150) +
+  theme_classic() +
+  theme(axis.title = element_text(face = "bold"),
+        axis.title.x = element_text(margin = margin(t = 11)),
+        axis.title.y = element_text(margin = margin(r = 9)),
+        panel.background = element_rect(fill = "transparent"),
+        plot.background = element_rect(fill = "transparent", color = NA),
+        legend.background = element_rect(fill = "transparent", color = NA),
+        legend.box.background = element_rect(fill = "transparent", color = NA))
+ggsave(file='C:/Users/bsimm/Dropbox/Tampa Bay Estuary Program/Research/Angler Preferences/Results/COSTS.svg', plot=plot_COSTS, width=170, height=100, units = "mm", bg = "transparent")
 
 
 ######### * FISHING PRACTICES ######### 
