@@ -344,7 +344,7 @@ ggsave(file='C:/Users/bsimm/Dropbox/Tampa Bay Estuary Program/Research/Angler Pr
 write.csv(PRESSURES, file='C:/Users/bsimm/Dropbox/Tampa Bay Estuary Program/Research/Angler Preferences/Results/PRESSURES.csv', row.names = FALSE)
 
 
-# Excludes 28 estimates above $1,000; median = $100
+# Excludes 9 estimates above $1,000; median = $100
 plot_COSTS <- ggplot(anglers, aes(x = COSTS)) +
   geom_histogram(binwidth = 50, fill = "#5C524F", color = "white", linewidth = 0.1) +
   geom_vline(xintercept = median(anglers$COSTS, na.rm = TRUE),color = "red",linetype = "dashed",linewidth = 1) +
