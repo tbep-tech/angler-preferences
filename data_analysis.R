@@ -342,6 +342,11 @@ plot_PRESSURES <- ggplot(PRESSURES, aes(x = PRESSURE, y = pct)) +
         legend.box.background = element_rect(fill = "transparent", color = NA))
 ggsave(file='C:/Users/bsimm/Dropbox/Tampa Bay Estuary Program/Research/Angler Preferences/Results/PRESSURES.svg', plot=plot_PRESSURES, width=170, height=100, units = "mm", bg = "transparent")
 write.csv(PRESSURES, file='C:/Users/bsimm/Dropbox/Tampa Bay Estuary Program/Research/Angler Preferences/Results/PRESSURES.csv', row.names = FALSE)
+PRESSURES_N <- anglers %>%
+  group_by(PRESSURES_N) %>%
+  summarise(Count = n()) %>%
+  mutate(pct = Count/485*100)
+
 
 
 # Excludes 9 estimates above $1,000; median = $100
